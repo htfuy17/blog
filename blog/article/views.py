@@ -1,6 +1,8 @@
 from django.shortcuts import render
 
 from article.models import Article, Comment
+from article.forms import ArticleForm
+
 
 def article(request):
     '''
@@ -19,5 +21,14 @@ def articleCreate(request):
         2. If method is POST, perform form validation and display error messages if the form is invalid
         3. Save the form to the model and redirect the user to the article page
     '''
-    # TODO: finish the code
-    return render(request, 'article/article.html')
+    template = 'article/articleCreate.html'
+    if request.method == 'GET':
+        print(ArticleForm())
+        return render(request, template, {'articleForm':ArticleForm()})
+    # POST
+    articleForm = ArticleForm(request.POST)
+    if not articleForm.is_valid():
+        return render(request, template, {'articleForm':articleForm})
+
+    articleForm.save()
+    return article(request)
